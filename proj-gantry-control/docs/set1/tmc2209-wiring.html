@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TMC2209 Wiring Reference</title>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --card: #242424;
+    --text: #e8e8e8;
+    --text-dim: #9a9a9a;
+    --border: #3a3a3a;
+    --red: #e24b4a;
+    --black-wire: #888888;
+    --green: #6aa832;
+    --yellow: #f2c14e;
+    --white-wire: #e8e8e8;
+    --blue: #4a90d9;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+  .layout {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    max-width: 900px;
+    width: 100%;
+  }
+  .column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+  }
+  .column.right { align-items: flex-end; }
+  .chip {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 32px;
+    text-align: center;
+    margin: 0 24px;
+    min-width: 140px;
+  }
+  .chip-name {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .chip-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 230px;
+    font-size: 13px;
+  }
+  .column.right .row { flex-direction: row-reverse; }
+  .swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .info { display: flex; flex-direction: column; gap: 2px; }
+  .column.right .info { text-align: right; }
+  .wire-color { font-weight: 600; }
+  .label { color: var(--text-dim); font-size: 11px; }
+  .group-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin: 8px 0 -4px 0;
+  }
+  .column.right .group-label { text-align: right; }
+  .legend {
+    margin-top: 40px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body>
+
+<h1>TMC2209 Wiring Reference</h1>
+<div class="subtitle">Single-driver bring-up &mdash; confirmed working on Z1</div>
+
+<div class="layout">
+  <div class="column left">
+    <div class="group-label">ESP32 signal lines</div>
+    <div class="row">
+      <div class="swatch" style="background: var(--green);"></div>
+      <div class="info">
+        <span class="wire-color">Green</span>
+        <span class="label">GPIO13 &rarr; EN</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="swatch" style="background: var(--yellow);"></div>
+      <div class="info">
+        <span class="wire-color">Yellow</span>
+        <span class="label">GPIO27 &rarr; STEP</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="swatch" style="background: var(--white-wire);"></div>
+      <div class="info">
+        <span class="wire-color">White</span>
+        <span class="label">GPIO14 &rarr; DIR</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chip">
+    <div class="chip-name">TMC2209</div>
+    <div class="chip-sub">driver</div>
+  </div>
+
+  <div class="column right">
+    <div class="group-label">24V power</div>
+    <div class="row">
+      <div class="swatch" style="background: var(--red);"></div>
+      <div class="info">
+        <span class="wire-color">Red</span>
+        <span class="label">24V PSU+ &rarr; VM</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="swatch" style="background: var(--black-wire);"></div>
+      <div class="info">
+        <span class="wire-color">Black</span>
+        <span class="label">24V PSU GND &rarr; GND</span>
+      </div>
+    </div>
+
+    <div class="group-label">Motor coils</div>
+    <div class="row">
+      <div class="swatch" style="background: var(--blue);"></div>
+      <div class="info">
+        <span class="wire-color">Blue</span>
+        <span class="label">Motor &rarr; A2</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="swatch" style="background: var(--red);"></div>
+      <div class="info">
+        <span class="wire-color">Red</span>
+        <span class="label">Motor &rarr; A1</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="swatch" style="background: var(--green);"></div>
+      <div class="info">
+        <span class="wire-color">Green</span>
+        <span class="label">Motor &rarr; B1</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="swatch" style="background: var(--black-wire);"></div>
+      <div class="info">
+        <span class="wire-color">Black</span>
+        <span class="label">Motor &rarr; B2</span>
+      </div>
+    </div>
+
+    <div class="group-label">ESP32 logic power</div>
+    <div class="row">
+      <div class="swatch" style="background: var(--red);"></div>
+      <div class="info">
+        <span class="wire-color">Red</span>
+        <span class="label">ESP32 VDD (3.3V) &rarr; VDD</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="swatch" style="background: var(--black-wire);"></div>
+      <div class="info">
+        <span class="wire-color">Black</span>
+        <span class="label">ESP32 GND &rarr; GND</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><strong>A1/A2</strong> = Coil A (Red/Blue)</div>
+  <div class="legend-item"><strong>B1/B2</strong> = Coil B (Green/Black)</div>
+  <div class="legend-item">33&Omega; resistor inline on VDD line only</div>
+</div>
+
+</body>
+</html>
