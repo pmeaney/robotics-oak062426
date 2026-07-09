@@ -103,11 +103,14 @@ class Stepper:
         self.en.value(DISABLE_LEVEL)
 
     def set_direction(self, forward):
-        """forward=True -> this axis's forward dir (up for Z, out for X)."""
-        level = self.fwd_level if forward else (1 - self.fwd_level)
+        """forward=True -> this axis's forward dir (up for Z, out for X).
+            In this config, the horizontal gantry moves left.
+            Also, "dir_bit" refers to the single binary digit (0 or 1) governing the motor's direction
+        """
+        dir_bit = self.fwd_level if forward else (1 - self.fwd_level)
         if self.invert:
-            level ^= 1
-        self.dir.value(level)
+            dir_bit ^= 1
+        self.dir.value(dir_bit)
 
 
 # Verticals' forward level = UP_DIR_LEVEL; X's forward level = X_FWD_LEVEL.
