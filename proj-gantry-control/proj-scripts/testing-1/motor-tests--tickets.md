@@ -28,6 +28,10 @@ This causes the horizontal bar to move down.
 
 #### Test3 --
 
+I set the "INVERT" values for the motors based on what I found out from script 2-- Z1: False, Z2: True ...results in upward motion.
+
+Test3 worked without any changes.  It currently moves the horizontal gantry left, in my current perspecttive at my desk.
+
 
 ## Test Series 1 -- Tickets
 
