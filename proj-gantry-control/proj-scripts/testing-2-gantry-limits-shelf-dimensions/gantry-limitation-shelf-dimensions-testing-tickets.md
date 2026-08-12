@@ -11,7 +11,7 @@ Follow in order — each ticket assumes the prior one passed.
 |------|----------|------|
 | Z1T | Z1 vertical — top | 35 |
 | Z1B | Z1 vertical — bottom | 34 |
-| Z2T | Z2 vertical — top | 5 |
+| Z2T | Z2 vertical — top | 5 | works
 | Z2B | Z2 vertical — bottom | 15 |
 | XZ1 | Horizontal (X) endstop at the Z1 vertical | 32 |
 | XZ2 | Horizontal (X) endstop at the Z2 vertical | 4 |
