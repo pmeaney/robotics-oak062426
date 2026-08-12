@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System 4 — Leveling</title>
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#23201B; --muted:#6B6862; --line:#E6E2D8; --card:#FFFFFF;
+    --v33:#4F46B8; --gnd:#5B5F67; --sig:#0E7C6B;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;padding:34px 18px}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 6px}
+  .lede{font-size:15px;margin:0 0 22px;max-width:62ch}
+  .titleblock{border:1px solid var(--ink);background:var(--card);border-radius:2px;overflow:hidden}
+  .tb-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--ink);padding:11px 16px}
+  .tb-no{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--muted)}
+  .tb-title{font-family:var(--mono);font-weight:600;font-size:15px;letter-spacing:.03em}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;padding:9px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .chip{width:15px;height:4px;border-radius:2px;display:inline-block}
+  .diagram{padding:16px 14px 6px}
+  svg{width:100%;height:auto;display:block}
+  .note{font-size:12.5px;color:var(--muted);font-family:var(--mono);padding:11px 16px;border-top:1px solid var(--line)}
+  .m{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+  .lbl{font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ESP32 Robotics System · Wiring diagram</h1>
+  <p class="lede">One gyro on the horizontal beam reads roll over I2C; the controller
+  keeps the beam square by nudging Z1 against Z2. Four wires, no mux, no external
+  passives — and the whole loop runs on the one board.</p>
+
+  <div class="titleblock">
+    <div class="tb-top"><span class="tb-title">Leveling</span><span class="tb-no">SYSTEM 4 / 04</span></div>
+    <div class="legend">
+      <span><i class="chip" style="background:#4F46B8"></i>3.3&nbsp;V</span>
+      <span><i class="chip" style="background:#5B5F67"></i>GND</span>
+      <span><i class="chip" style="background:#0E7C6B"></i>I2C</span>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 780 340" role="img" aria-label="System 4 gyro leveling">
+        <defs>
+          <marker id="t4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#0E7C6B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+          <marker id="g4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5B5F67" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+          <marker id="i4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#4F46B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        </defs>
+
+        <!-- ESP32 -->
+        <rect x="40" y="60" width="150" height="120" rx="4" fill="#fff" stroke="#23201B" stroke-width="1.2"/>
+        <text class="lbl" x="115" y="86" text-anchor="middle">ESP32</text>
+        <text class="m" x="115" y="102" text-anchor="middle">at base</text>
+        <text class="m" x="176" y="126" text-anchor="end">3.3V</text>
+        <text class="m" x="176" y="144" text-anchor="end">GND</text>
+        <text class="m" x="176" y="162" text-anchor="end">GPIO 21 / 22</text>
+
+        <!-- GY-521 -->
+        <rect x="510" y="60" width="180" height="120" rx="4" fill="#fff" stroke="#23201B" stroke-width="1.2"/>
+        <text class="lbl" x="600" y="86" text-anchor="middle">GY-521 (MPU-6050)</text>
+        <text class="m" x="600" y="102" text-anchor="middle">centered on the beam</text>
+        <text class="m" x="524" y="126" text-anchor="start">VCC</text>
+        <text class="m" x="524" y="144" text-anchor="start">GND</text>
+        <text class="m" x="524" y="162" text-anchor="start">SDA / SCL</text>
+
+        <!-- wires -->
+        <line x1="190" y1="122" x2="508" y2="122" stroke="#4F46B8" stroke-width="1.6" marker-end="url(#i4)"/>
+        <line x1="190" y1="140" x2="508" y2="140" stroke="#5B5F67" stroke-width="1.6" marker-end="url(#g4)"/>
+        <line x1="190" y1="158" x2="508" y2="158" stroke="#0E7C6B" stroke-width="1.6" marker-end="url(#t4)"/>
+        <text class="m" x="349" y="116" text-anchor="middle" fill="#3B34A0">VCC ← 3.3V</text>
+        <text class="m" x="349" y="176" text-anchor="middle" fill="#0E7C6B">SDA↔21 · SCL←22 · KEEP SHORT</text>
+
+        <text class="m" x="600" y="196" text-anchor="middle">AD0 float → 0x68 · onboard pull-ups · XCL/XDA/INT unused</text>
+
+        <!-- leveling loop -->
+        <rect x="40" y="240" width="700" height="72" rx="6" fill="#FBFAF7" stroke="#E6E2D8"/>
+        <text class="m" x="56" y="234" text-anchor="start">LEVELING LOOP (on-board, no host in the middle)</text>
+        <rect x="60" y="258" width="130" height="36" rx="4" fill="#fff" stroke="#8A867C"/>
+        <text class="lbl" x="125" y="280" text-anchor="middle">read roll</text>
+        <rect x="250" y="258" width="150" height="36" rx="4" fill="#fff" stroke="#8A867C"/>
+        <text class="lbl" x="325" y="280" text-anchor="middle">compute correction</text>
+        <rect x="460" y="258" width="150" height="36" rx="4" fill="#fff" stroke="#8A867C"/>
+        <text class="lbl" x="535" y="280" text-anchor="middle">nudge Z1 vs Z2</text>
+        <rect x="648" y="258" width="76" height="36" rx="4" fill="#fff" stroke="#8A867C"/>
+        <text class="lbl" x="686" y="280" text-anchor="middle">square</text>
+        <line x1="190" y1="276" x2="248" y2="276" stroke="#0E7C6B" stroke-width="1.5" marker-end="url(#t4)"/>
+        <line x1="400" y1="276" x2="458" y2="276" stroke="#0E7C6B" stroke-width="1.5" marker-end="url(#t4)"/>
+        <line x1="610" y1="276" x2="646" y2="276" stroke="#0E7C6B" stroke-width="1.5" marker-end="url(#t4)"/>
+      </svg>
+    </div>
+    <div class="note">Roll axis aligned with the Z1↔Z2 squaring axis. Ground to the star (same reference as everything else). I2C wants brevity — opposite of the hall runs.</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System 3 — Endstops</title>
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#23201B; --muted:#6B6862; --line:#E6E2D8; --card:#FFFFFF;
+    --v33:#4F46B8; --v5:#C06A2A; --gnd:#5B5F67; --sig:#0E7C6B;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;padding:34px 18px}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 6px}
+  .lede{font-size:15px;margin:0 0 22px;max-width:62ch}
+  .titleblock{border:1px solid var(--ink);background:var(--card);border-radius:2px;overflow:hidden}
+  .tb-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--ink);padding:11px 16px}
+  .tb-no{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--muted)}
+  .tb-title{font-family:var(--mono);font-weight:600;font-size:15px;letter-spacing:.03em}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;padding:9px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .chip{width:15px;height:4px;border-radius:2px;display:inline-block}
+  .diagram{padding:16px 14px 6px}
+  svg{width:100%;height:auto;display:block}
+  .note{font-size:12.5px;color:var(--muted);font-family:var(--mono);padding:11px 16px;border-top:1px solid var(--line)}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;margin:2px 0 0}
+  caption{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 8px}
+  th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:600}
+  td.b{font-family:var(--mono)}
+  .parts{padding:14px 16px 18px;border-top:1px solid var(--line)}
+  .m{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+  .lbl{font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ESP32 Robotics System · Wiring diagram</h1>
+  <p class="lede">One endstop channel as it sits on the 420-hole board — build it six
+  times. The three rails are shared by all six; the two columns, three parts, and one
+  GPIO pin are private to each sensor.</p>
+
+  <div class="titleblock">
+    <div class="tb-top"><span class="tb-title">Endstops — one channel (×6)</span><span class="tb-no">SYSTEM 3 / 04</span></div>
+    <div class="legend">
+      <span><i class="chip" style="background:#4F46B8"></i>3.3&nbsp;V</span>
+      <span><i class="chip" style="background:#C06A2A"></i>5&nbsp;V</span>
+      <span><i class="chip" style="background:#5B5F67"></i>GND</span>
+      <span><i class="chip" style="background:#0E7C6B"></i>signal</span>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 780 372" role="img" aria-label="System 3 one hall channel">
+        <defs>
+          <marker id="sarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#0E7C6B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+          <marker id="marr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5B5F67" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+          <marker id="varr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#C06A2A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        </defs>
+
+        <!-- top rails -->
+        <rect x="188" y="56" width="360" height="9" rx="3" fill="#EEEDFB" stroke="#4F46B8" stroke-width="0.6"/>
+        <rect x="188" y="74" width="360" height="9" rx="3" fill="#EFEFF1" stroke="#5B5F67" stroke-width="0.6"/>
+        <text class="lbl" x="554" y="64" fill="#3B34A0">3V3</text>
+        <text class="lbl" x="554" y="82" fill="#494D54">GND</text>
+        <text class="m" x="188" y="48" fill="#6B6862">3.3V / GND ← from 5×5 (Sys 2)</text>
+
+        <!-- field -->
+        <rect x="184" y="96" width="368" height="82" rx="6" fill="#FBFAF7" stroke="#E6E2D8" stroke-width="0.8"/>
+
+        <!-- node columns -->
+        <rect x="242" y="98" width="26" height="78" rx="3" fill="#fff" stroke="#E6E2D8"/>
+        <rect x="392" y="98" width="26" height="78" rx="3" fill="#fff" stroke="#E6E2D8"/>
+        <g fill="#9c9a92">
+          <circle cx="255" cy="108" r="1.8"/><circle cx="255" cy="126" r="1.8"/><circle cx="255" cy="144" r="1.8"/><circle cx="255" cy="162" r="1.8"/>
+          <circle cx="405" cy="108" r="1.8"/><circle cx="405" cy="126" r="1.8"/><circle cx="405" cy="144" r="1.8"/><circle cx="405" cy="162" r="1.8"/>
+        </g>
+        <text class="lbl" x="255" y="192" text-anchor="middle">node A</text>
+        <text class="lbl" x="405" y="192" text-anchor="middle">node B</text>
+
+        <!-- 10k pull-up A -> 3V3 -->
+        <rect x="249" y="84" width="12" height="16" rx="2" fill="#EEEDFB" stroke="#4F46B8" stroke-width="0.6"/>
+        <line x1="255" y1="84" x2="255" y2="61" stroke="#4F46B8" stroke-width="1.3"/>
+        <line x1="255" y1="100" x2="255" y2="108" stroke="#5B5F67" stroke-width="1.1"/>
+        <text class="m" x="236" y="92" text-anchor="end">10kΩ</text>
+
+        <!-- 10nF B -> GND -->
+        <rect x="399" y="84" width="12" height="16" rx="2" fill="#EFEFF1" stroke="#5B5F67" stroke-width="0.6"/>
+        <line x1="405" y1="84" x2="405" y2="79" stroke="#5B5F67" stroke-width="1.3"/>
+        <line x1="405" y1="100" x2="405" y2="108" stroke="#5B5F67" stroke-width="1.1"/>
+        <text class="m" x="424" y="92" text-anchor="start">10nF · 103</text>
+
+        <!-- 1k A -> B -->
+        <rect x="271" y="138" width="118" height="12" rx="2" fill="#fff" stroke="#8A867C" stroke-width="0.8"/>
+        <line x1="255" y1="144" x2="271" y2="144" stroke="#5B5F67" stroke-width="1.1"/>
+        <line x1="389" y1="144" x2="405" y2="144" stroke="#5B5F67" stroke-width="1.1"/>
+        <text class="m" x="330" y="148" text-anchor="middle">1kΩ</text>
+
+        <!-- OUT in / GPIO out -->
+        <line x1="120" y1="144" x2="248" y2="144" stroke="#0E7C6B" stroke-width="1.6" marker-end="url(#sarr)"/>
+        <text class="m" x="160" y="137" text-anchor="middle" fill="#0E7C6B">sensor OUT</text>
+        <line x1="405" y1="144" x2="500" y2="144" stroke="#0E7C6B" stroke-width="1.6" marker-end="url(#sarr)"/>
+        <text class="m" x="470" y="137" text-anchor="middle" fill="#0E7C6B">→ GPIO</text>
+
+        <!-- bottom rails -->
+        <rect x="188" y="250" width="360" height="9" rx="3" fill="#EFEFF1" stroke="#5B5F67" stroke-width="0.6"/>
+        <rect x="188" y="268" width="360" height="9" rx="3" fill="#F7EBE0" stroke="#C06A2A" stroke-width="0.6"/>
+        <text class="lbl" x="554" y="258" fill="#494D54">GND</text>
+        <text class="lbl" x="554" y="276" fill="#9A521F">5V</text>
+        <line x1="548" y1="254" x2="600" y2="254" stroke="#5B5F67" stroke-width="1.6" marker-end="url(#marr)"/>
+        <line x1="548" y1="272" x2="600" y2="272" stroke="#C06A2A" stroke-width="1.6" marker-end="url(#varr)"/>
+        <text class="m" x="604" y="257">→ sensor GND</text>
+        <text class="m" x="604" y="275">→ sensor VCC (bare tap)</text>
+
+        <!-- buck -->
+        <rect x="20" y="236" width="120" height="56" rx="4" fill="#fff" stroke="#23201B" stroke-width="1.2"/>
+        <text class="lbl" x="80" y="260" text-anchor="middle">LM2596 buck</text>
+        <text class="m" x="80" y="276" text-anchor="middle">24V → 5.0–5.1V</text>
+        <line x1="140" y1="272" x2="186" y2="272" stroke="#C06A2A" stroke-width="1.6" marker-end="url(#varr)"/>
+        <text class="m" x="163" y="266" text-anchor="middle" fill="#9A521F">[0.5A]</text>
+        <text class="m" x="20" y="228">24V in →</text>
+        <text class="m" x="20" y="308">[0.5A slow-blow] · buck GND → star</text>
+      </svg>
+    </div>
+    <div class="parts">
+      <table>
+        <caption>Parts per channel — meter every resistor first</caption>
+        <thead><tr><th>Part</th><th>Value</th><th>Marking / bands</th><th>Placement</th></tr></thead>
+        <tbody>
+          <tr><td>Pull-up</td><td class="b">10&nbsp;kΩ</td><td class="b">brown black black <b>red</b> brown</td><td>node A → 3.3&nbsp;V</td></tr>
+          <tr><td>Series</td><td class="b">1&nbsp;kΩ</td><td class="b">brown black black <b>brown</b> brown</td><td>node A → node B</td></tr>
+          <tr><td>Filter</td><td class="b">10&nbsp;nF</td><td class="b">103</td><td>node B → GND</td></tr>
+          <tr><td>Decoupling</td><td class="b">0.1&nbsp;µF</td><td class="b">104</td><td>at each sensor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">1&nbsp;kΩ vs 10&nbsp;kΩ differ by ONE band (4th: brown=1k, red=10k). Channels: Z1base 34 · Z1tip 35 · Z2base 36 · Z2tip 39 · Xleft 32 · Xright 4.</div>
+  </div>
+</div>
+</body>
+</html>

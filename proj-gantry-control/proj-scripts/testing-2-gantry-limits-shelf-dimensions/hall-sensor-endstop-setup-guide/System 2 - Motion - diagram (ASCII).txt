@@ -1,0 +1,50 @@
+===============================================================================
+ SYSTEM 2 - MOTION  (3x TMC2209 drivers + 3x NEMA 17 + ESP32 + 5x5 mini board)
+===============================================================================
+
+POWER + MOTOR PATH (one axis shown; Z1, Z2, X are identical)
+-------------------------------------------------------------------------------
+
+  24V+ --[7A]--> POWER BLOCK (TB1) --[2A]--> VM  +-----------+
+                                             GND |  TMC2209  |
+                                                 |  driver   |
+   ESP32 3.3V --> 5x5(+) --[33 ohm]--------> VDD |           |     NEMA 17
+   ESP32 GND  --> 5x5(-)-------------------> GND |    A2 ----|---> blue
+                                                 |    A1 ----|---> red
+   ESP32 EN  ------------------------------> EN  |    B2 ----|---> green
+   ESP32 STEP ------------------------------> STEP|   B1 ----|---> black
+   ESP32 DIR ------------------------------> DIR |           |
+                                                 +-----------+
+   (VREF ~1.7V on each driver. Z1 DIR is inverted in firmware - mirror mount.)
+
+  ESP32 motor pins:   Z1 = 25/26/33    Z2 = 13/27/14    X = 18/19/23
+                          EN/STEP/DIR
+
+
+5x5 MINI BREADBOARD  (logic-power hub: hands out 3.3V, gathers logic GND)
+-------------------------------------------------------------------------------
+
+        POS RAIL (3.3V)                     NEG RAIL (logic GND)
+        +----------------------+            +----------------------+
+        | o  ESP32 3.3V        |            | o  ESP32 GND         |
+        | o -[33]- VDD driver1 |            | o  GND driver 1      |
+        | o -[33]- VDD driver2 |            | o  GND driver 2      |
+        | o -[33]- VDD driver3 |            | o  GND driver 3      |
+        |                      |            | o  ---> 2nd GND rail |==> STAR
+        +----------------------+            +----------------------+
+          (each pos leg passes                 (spare hole bridges
+           through a 33 ohm R)                  logic GND to the star)
+
+
+GROUNDING (everything meets at ONE star point = 2nd GND rail / TB2)
+-------------------------------------------------------------------------------
+
+     motor-power GND (drivers) ----+
+     PSU 24V(-) --------------------+--> [ 2nd GND RAIL / TB2 = STAR ] 
+     5x5 neg rail (logic GND) ------+          |
+                                               +--> 420-hole board GND (System 3)
+
+  Rule: motor-return currents and logic/sensor grounds meet ONLY at the star -
+  never sharing a wire segment.
+
+===============================================================================

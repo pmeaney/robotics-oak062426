@@ -1,0 +1,62 @@
+===============================================================================
+ SYSTEM 3 - ENDSTOPS  (6x A3144 halls + 420-hole board + LM2596 buck)
+===============================================================================
+
+5V SUPPLY (buck) + BOARD FEEDS
+-------------------------------------------------------------------------------
+
+  24V --[0.5A slow]--> LM2596 buck --> set 5.0-5.1V --[0.5A]--> 5V rail
+                          (gate-check under load BEFORE connecting sensors)
+                          buck GND --> STAR
+
+  Board rails fed from:   3.3V <- 5x5 pos rail (System 2)
+                          GND  <- 5x5 / 2nd GND rail (STAR)
+                          5V   <- buck
+
+
+ONE CHANNEL  (build 6x - one per sensor)
+-------------------------------------------------------------------------------
+
+   3.3V rail =========================================================
+                        |
+                      [10k]  pull-up
+                        |
+   sensor OUT --------> A ----[1k]---- B --------> ESP32 GPIO (own pin)
+   (from cable)                        |
+                                     [10nF]  filter
+                                        |
+   GND  rail =========================================================
+
+     node A = OUT in + 10k(to 3.3V) + 1k
+     node B = 1k + 10nF(to GND) + jumper to GPIO
+     1k + 10nF = RC debounce (~16 kHz).   1k protects the pin.
+
+   Sensor power (bare taps, NO resistor):
+   5V  rail ==============================> out to sensor VCC (via cable)
+   GND rail ==============================> out to sensor GND (via cable)
+   (0.1uF / "104" decoupling cap lives AT the sensor, not on the board.)
+
+
+420-HOLE BOARD LAYOUT  (top view; 6 channels in the a-e field)
+-------------------------------------------------------------------------------
+
+   3.3V rail  ############################################################
+   GND  rail  ############################################################
+   a-e field  [ch1][ch2][ch3][ch4][ch5][ch6]  <- one 2-column channel each
+              --------- center trench ---------
+   f-j field  (free: cable landing + probe points)
+   GND  rail  ############################################################
+   5V   rail  ############################################################   ==> to sensors
+
+   ch1=Z1base(34) ch2=Z1tip(35) ch3=Z2base(36) ch4=Z2tip(39) ch5=Xleft(32) ch6=Xright(4)
+
+
+PARTS PER CHANNEL (meter every resistor first!)
+-------------------------------------------------------------------------------
+   10k pull-up : brown black black RED   brown   (node A -> 3.3V)
+   1k  series  : brown black black BROWN brown   (node A -> node B)
+   10nF filter : marked "103"                    (node B -> GND)
+   0.1uF decap : marked "104"                    (at each sensor)
+   GOTCHA: 1k vs 10k differ by ONE band (4th: brown=1k, red=10k).
+
+===============================================================================

@@ -1,0 +1,36 @@
+===============================================================================
+ SYSTEM 4 - LEVELING  (1x GY-521 / MPU-6050 gyro on the horizontal beam)
+===============================================================================
+
+WIRING  (4 wires, no mux, no external passives)
+-------------------------------------------------------------------------------
+
+     ESP32                                  GY-521 (MPU-6050)
+     (at base)                              (centered on the moving beam)
+     +----------+                           +------------------+
+     |    3.3V  |-------------------------->| VCC              |
+     |    GND   |-------------------------->| GND   (to STAR)  |
+     | GPIO 21  |<---------- SDA ---------->| SDA              |
+     | GPIO 22  |----------- SCL ---------->| SCL              |
+     +----------+     (KEEP THIS RUN SHORT) | AD0 = float -> 0x68
+                                            | XCL/XDA/INT = unused
+                                            +------------------+
+
+   - onboard I2C pull-ups (no external resistors)
+   - 21/22 are the ESP32 hardware I2C pins
+   - I2C wants BREVITY (opposite of the hall runs, which want a service loop)
+
+
+LEVELING LOOP  (runs entirely on the one board)
+-------------------------------------------------------------------------------
+
+        +--------------------------------------------------+
+        |                                                  |
+        v                                                  |
+   read roll (GY-521) --> compute correction --> nudge Z1 vs Z2 --> beam square
+                                                 (System 2 motors)      |
+        ^                                                               |
+        +---------------------------------------------------------------+
+                              (closed loop, no host in the middle)
+
+===============================================================================
