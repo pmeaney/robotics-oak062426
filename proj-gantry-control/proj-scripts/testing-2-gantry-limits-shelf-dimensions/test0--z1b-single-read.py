@@ -13,17 +13,17 @@
 # | Name | Location | GPIO |
 # |------|----------|------|
 # | Z1T | Z1 vertical — top | 35 | works
-# | Z1B | Z1 vertical — bottom | 34 | not working
+# | Z1B | Z1 vertical — bottom | 34 | not working stuck on magnet
 # | Z2T | Z2 vertical — top | 5 | works
-# | Z2B | Z2 vertical — bottom | 15 | not working
+# | Z2B | Z2 vertical — bottom | 15 | not working stuck on idle
 # | XZ1 | Horizontal (X) endstop at the Z1 vertical | 32 | works
-# | XZ2 | Horizontal (X) endstop at the Z2 vertical | 4 | not working
+# | XZ2 | Horizontal (X) endstop at the Z2 vertical | 4 | stuck on magnet
 
 from machine import Pin
 import time
 
 NAME      = "Z1B"
-GPIO      = 4
+GPIO      = 34
 POLL_HZ   = 4                       # reads per second (>= 2 as needed)
 PERIOD_MS = 1000 // POLL_HZ
 
