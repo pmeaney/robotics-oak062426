@@ -5,7 +5,7 @@
 #
 # Two sections:
 #   shelf:   physical description  (human-authored, hand-measured, for reference)
-#   gantry:  machine measurements  (written by the ThinkCentre after a S3T4 run)
+#   gantry:  machine measurements  (written by the ThinkCentre after a Ticket E3 run)
 #
 # Each measured quantity is a {value, unit, note} mapping so the label + unit survive
 # parsing — a human reading the file and a program reading .value both stay oriented.
@@ -25,15 +25,15 @@ shelf:
 
 gantry:
   description: >
-    Calibration measured against THIS shelf. Written after a homing + travel run (S3T4).
+    Calibration measured against THIS shelf. Written after a homing + travel run (E3).
     Steps are the machine's native unit; mm fields above let us derive steps-per-mm.
-  measured_at: null       # ISO timestamp of the S3T4 run that produced these numbers
+  measured_at: null       # ISO timestamp of the E3 run that produced these numbers
 
   # POLICY — chosen once, not measured. Same across installs unless retuned.
   # Soft stop is derived from these, so re-measuring the hard stop moves it automatically.
   policy:
-    buffer_steps:  { value: null, unit: steps, note: "gap: hard_stop - soft_stop; room so normal moves never reach the switch (from S3T4)" }
-    backoff_steps: { value: null, unit: steps, note: "retreat distance after touching a stop; releases switch when homing (from S3T3)" }
+    buffer_steps:  { value: null, unit: steps, note: "gap: hard_stop - soft_stop; room so normal moves never reach the switch (from E3)" }
+    backoff_steps: { value: null, unit: steps, note: "retreat distance after touching a stop; releases switch when homing (from E2)" }
 
   axes:
     X:

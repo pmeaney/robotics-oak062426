@@ -54,7 +54,7 @@ Each layer only talks to the one beneath it.
 "New place, new shelf, N × M cells, T thickness" is literally editing that file.
 
 - **shelf:** physical description (rows, columns, cell dimensions in mm) — human-authored.
-- **gantry:** measured calibration (axis travel + center in steps) — written after S3T4.
+- **gantry:** measured calibration (axis travel + center in steps) — written after E3.
 - The **mm → steps** bridge is exactly the translation the Circuit layer needs to turn
   "cell (row 2, col 4)" into "X = these steps, Z = these steps."
 
@@ -64,13 +64,13 @@ So the top layer isn't designed from scratch later — it fills slots that alrea
 
 | Subsystem | Status | Notes |
 |-----------|--------|-------|
-| Gantry positioning | in progress | Endstop / homing / travel tickets (S3T2–S3T5). Produces the movement primitives. |
+| Gantry positioning | in progress | Endstop / homing / travel tickets (E1–E4). Produces the movement primitives. |
 | Gyro (GY-521) | queued | Leveling + squaring cross-check. Out of scope until called for. |
 | LIDAR (RPLIDAR C1) | basic test done | Did a basic test scan months ago. Per-cell "present? scan : mark empty" logic lives in the Circuit layer, above the gantry. |
 
 ## Calibration (install-time routine)
 
-The S3T2–S3T4 tickets aren't standalone tests — they're the *steps of a routine the operator
+The E1–E3 tickets aren't standalone tests — they're the *steps of a routine the operator
 runs on day one at every install*. Calibration composes those proven primitives; it does
 no new low-level work.
 
@@ -97,13 +97,13 @@ Mission question, not a low-level one.
 
 ## Where the current work fits
 
-S3T2–S3T4 produce the gantry's whole vocabulary: **home**, and **move to a step target
+E1–E3 produce the gantry's whole vocabulary: **home**, and **move to a step target
 inside known bounds**. That's everything the Circuit walker needs from motion. Lidar and
 gyro slot in later as coordinator modules next to `motion` — nothing in the current work
 boxes them out.
 
-- **S3T2** — reflex stop (prove the halt)
-- **S3T3** — homing (prove repeatable zero)
-- **S3T4** — travel measurement (produce step calibration → fills the YAML)
+- **E1** — reflex stop (prove the halt)
+- **E2** — homing (prove repeatable zero)
+- **E3** — travel measurement (produce step calibration → fills the YAML)
 
 Once these pass, the movement functions can be built on proven primitives.
