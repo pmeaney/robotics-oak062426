@@ -1,0 +1,59 @@
+# prototype-shelf.yaml
+# Local reference DB for ONE physical shelf + the gantry calibration measured against it.
+# Lives on the ThinkCentre (Debian). The ESP32 never reads this file — it gets pushed
+# plain step limits as JSON over serial at startup.
+#
+# Two sections:
+#   shelf:   physical description  (human-authored, hand-measured, for reference)
+#   gantry:  machine measurements  (written by the ThinkCentre after a Ticket E3 run)
+#
+# Each measured quantity is a {value, unit, note} mapping so the label + unit survive
+# parsing — a human reading the file and a program reading .value both stay oriented.
+
+shelf:
+  name: prototype-shelf-01
+  description: >
+    First test shelf used for gantry bring-up. Dimensions are nominal / hand-measured;
+    kept for reference and for deriving steps-per-mm later.
+  layout:
+    rows:    4            # shelf levels, vertical (Z)
+    columns: 6            # cell slots per row, horizontal (X)
+  cell:                   # nominal size of a single cell/slot
+    width:  { value: 120, unit: mm, note: "one cell span, X direction" }
+    height: { value: 300, unit: mm, note: "gap between levels, Z direction" }
+    depth:  { value: 400, unit: mm, note: "front-to-back, for LIDAR range" }
+
+gantry:
+  description: >
+    Calibration measured against THIS shelf. Written after a homing + travel run (E3).
+    Steps are the machine's native unit; mm fields above let us derive steps-per-mm.
+  measured_at: null       # ISO timestamp of the E3 run that produced these numbers
+
+  # POLICY — chosen once, not measured. Same across installs unless retuned.
+  # Soft stop is derived from these, so re-measuring the hard stop moves it automatically.
+  policy:
+    buffer_steps:  { value: null, unit: steps, note: "gap: hard_stop - soft_stop; room so normal moves never reach the switch (from E3)" }
+    backoff_steps: { value: null, unit: steps, note: "retreat distance after touching a stop; releases switch when homing (from E2)" }
+
+  axes:
+    X:
+      hard_stop_steps: { value: null, unit: steps, note: "MEASURED: usable travel between XZ1 and XZ2 endstops (the physical wall)" }
+      soft_stop_steps: { value: null, unit: steps, note: "DERIVED: hard_stop_steps - policy.buffer_steps" }
+      center_steps:    { value: null, unit: steps, note: "hard_stop_steps // 2" }
+    Z1:
+      hard_stop_steps: { value: null, unit: steps, note: "MEASURED: travel between Z1B and Z1T endstops" }
+      soft_stop_steps: { value: null, unit: steps, note: "DERIVED: hard_stop_steps - policy.buffer_steps" }
+      center_steps:    { value: null, unit: steps }
+    Z2:
+      hard_stop_steps: { value: null, unit: steps, note: "MEASURED: travel between Z2B and Z2T endstops" }
+      soft_stop_steps: { value: null, unit: steps, note: "DERIVED: hard_stop_steps - policy.buffer_steps" }
+      center_steps:    { value: null, unit: steps }
+  squaring:
+    z1_z2_delta_steps: { value: null, unit: steps, note: "Z1 vs Z2 count at top; out-of-square, cross-check w/ GY-521" }
+
+  # OPTIONAL — the mm<->steps bridge. Delete this block if you want the file lean.
+  # Better measured directly (command N steps, measure mm moved) than inferred from
+  # shelf geometry, but the geometry gives a rough sanity value.
+  derived:
+    steps_per_mm_x: { value: null, unit: "steps/mm", note: "rough: X hard_stop_steps / (columns * cell.width)" }
+    steps_per_mm_z: { value: null, unit: "steps/mm", note: "rough: Z hard_stop_steps / (rows * cell.height)" }
