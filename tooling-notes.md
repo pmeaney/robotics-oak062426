@@ -3,6 +3,76 @@
 Background and setup detail for the host-side (ThinkCentre / Debian) tooling. The
 short version lives in the README; this is the "why" and the troubleshooting.
 
+
+# Running Code on the ESP32 — mpremote & Stopping Safely
+
+## What mpremote is
+
+`mpremote` is the official MicroPython remote-control tool. It runs on the
+**ThinkCentre** (the host) and talks to the **ESP32** over USB serial. Install it
+once with pipx: `pipx install mpremote`. Nothing is installed on the board itself —
+our test scripts use only built-in MicroPython modules.
+
+## The command we use
+
+```bash
+mpremote run some-file.py
+```
+
+`run` copies the script into the board's **RAM** and executes it there, streaming
+the board's `print()` output back to your terminal. It does **not** persist the
+script to the board's flash — re-running just re-sends it. That's ideal for the
+iterate-and-test workflow this project uses.
+
+## ⚠ The Ctrl-C caveat (matters for every motion test)
+
+**Ctrl-C is not a reliable motor stop.** With `mpremote run`, Ctrl-C acts on the
+*host-side tool*, and it is only best-effort at forwarding an interrupt to the board
+over serial. In practice it can detach mpremote's terminal — output stops — while
+the script keeps running on the ESP32 and **the motor keeps moving**. Observed on
+this bench: Ctrl-C silenced the terminal but the gantry finished its move.
+
+Our scripts wrap motion in `try/finally` so that a `KeyboardInterrupt` *on the board*
+disables the drivers. But that only fires if the interrupt actually reaches the
+board. When mpremote detaches first, it never does.
+
+**Treat Ctrl-C as "probably stops it," never as your safety stop.**
+
+## The stop you can trust
+
+A stop that has to travel over serial can't be a safety stop — anything that drops
+the link (Ctrl-C, unplugged USB, a crashed host) leaves the motor running. The
+trustworthy stops are the ones that don't depend on the host:
+
+- **The endstop reflex** — local to the ESP32, always on. This is why the S3T2 /
+  S3T3 reflex tests matter beyond being checkboxes.
+- **A physical kill** — a hand-operated switch in the motor power line (or one that
+  pulls the drivers' EN line to disabled). Host-independent. Add this before faster
+  or heavier runs (especially the Z beam).
+
+## Recovery commands (after an abort)
+
+Only **one** mpremote session can own the serial port at a time. If a run is stuck,
+a second command can't grab the port until the first process is gone — so realistic
+recovery is: kill the stuck mpremote, reconnect, stop the board, force drivers off.
+
+| Command | Purpose / when |
+|---------|----------------|
+| `mpremote repl` | Interactive REPL. **Ctrl-C** here interrupts running code more directly; **Ctrl-D** soft-resets (stops the program); **Ctrl-X** exits mpremote. |
+| `mpremote reset` | Hard-reset the board — stops any running program. Caveat: on reset, GPIOs return to default until a script re-asserts them, so **follow with `disable-all.py`**. |
+| `mpremote run disable-all.py` | Forces every driver EN pin to DISABLED. Run after any abort/reset to guarantee drivers are off. (Port must be free first.) |
+| `mpremote exec "<code>"` | One-liner on the board — the no-file version of a quick disable if you don't have the script handy. |
+
+**After-abort habit:** stop the board (`repl` + Ctrl-C, or `reset`), then
+`mpremote run disable-all.py` to be certain the coils are released.
+
+## Files referenced here
+
+- `disable-all.py` — enables nothing; drives all three EN pins (Z1 25, Z2 13, X 18)
+  to DISABLED. Your after-abort safety net.
+
+  
+
 ## The one rule: one program owns the serial port
 
 The ESP32 shows up on Debian as a serial device, `/dev/ttyUSB0` (it uses a CP2102

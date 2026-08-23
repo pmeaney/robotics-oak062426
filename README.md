@@ -19,6 +19,25 @@ Run a test with:
 mpremote run some-file.py
 ```
 
+## `disable-all.py` — after-abort safety
+
+Forces every motor driver **DISABLED** (drives all three EN pins high; TMC2209 EN is
+active-low). It enables nothing and moves nothing — its only job is to guarantee the
+coils are released.
+
+```bash
+mpremote run disable-all.py
+```
+
+**When to run it:** after any aborted or stuck motion script. Because `mpremote run`'s
+Ctrl-C is only a best-effort stop (it can detach the terminal while the board keeps
+running), the safe habit is to stop the board first — `mpremote repl` then Ctrl-C, or
+`mpremote reset` — and then run `disable-all.py` to be certain the drivers are off.
+The serial port must be free first (one mpremote session owns it at a time).
+
+Not a substitute for a hardware kill switch — a serial command can't be a true safety
+stop. It's the software backstop for tidying up after an abort.
+
 
 # Ticket Sets — Overview
 

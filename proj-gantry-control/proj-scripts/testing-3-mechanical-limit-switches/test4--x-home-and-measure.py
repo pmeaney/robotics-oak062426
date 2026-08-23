@@ -20,6 +20,19 @@
 #
 # Logic (NO): released = 1, pressed = 0. TRIGGERED = 0.
 
+
+# ❯ mpremote run test4--x-home-and-measure.py
+# S3T4: X home (-> XZ2) + measure (-> XZ1), single-speed. Ctrl-C to abort.
+# [HOME]     driving toward XZ2...
+#   XZ2 tripped -> zero set.
+# [BACKOFF]  100 steps off XZ2 -> XZ2 released.
+# [MEASURE]  driving toward XZ1, counting...
+#   XZ1 tripped.
+#   RESULT: X travel (hard_stop) = 10811 steps,  center = 5405 steps.
+#   backed off XZ1. Rerun and compare travel to gauge repeatability.
+# X driver disabled.
+
+
 from machine import Pin
 import time
 
