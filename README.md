@@ -81,50 +81,44 @@ readout, which made faults isolable. Kept only for reference.
 
 ---
 
-## Set 3 — Mechanical Touch Sensors → Calibration
+## Set 3 — Mechanical Touch Sensors + Shelf-Dimensions YAML + Gantry Motors → Calibration
 
 Endstop / limit-switch positioning. This set is **preparation for the calibration
-function**: prove one switch, prove all six, prove the halt/homing/measurement primitives,
-then build calibration on top of them.
+function**: prove the sensors read, prove the reflex halt, prove home + measurement, then
+build calibration on top. (Soft-limit / boundary enforcement is brain-side — tracked
+separately in `motion-control--tickets.md`, not here.)
 
-### Test 0 — Single-switch live read
-Read one endstop switch, standing still, and confirm it reports correctly (released = 1,
-pressed = 0). Test each of the six channels by editing the pin number and re-running the
-same script — one switch at a time, so a bad channel is unambiguous. Proves the wiring,
-pull-up, and polarity per channel. *(Done: confirmed NO wiring, `TRIGGERED = 0`,
-idle-HIGH.)*
+### S3T0 — Single-switch live read *(done)*
+Read one endstop switch, standing still; confirm released = 1, pressed = 0. Test each of the
+six channels by editing the pin and re-running — one at a time, so a bad channel is
+unambiguous. Proved wiring, pull-up, and polarity. (NO wiring, `TRIGGERED = 0`, idle-HIGH.)
 
-### E1 — Reflex stop
-Prove the gantry stops itself the instant a switch is hit, without asking the ThinkCentre.
-Where Test 0 read one switch standing still, E1 reads all six *while a motor is moving*, and
-a hit kills the motor within one step. This is the safety reflex — dumb, fast, local. Move
-an axis slowly, trip switches by hand, confirm it halts and names which one fired.
+### S3T1 — All-six read + pin/axis mapping *(done)*
+Read all six at once, standing still: baseline all = 1, then press each switch and confirm
+its label matches the one pressed. Proved every channel and locked the axis→pin map.
 
-### E2 — Homing
-Prove the gantry can find a repeatable zero on its own. It drives to a switch (fast), backs
-off, then creeps back in slow for a precise touch — that slow touch becomes position 0.
-Home three times and confirm the same spot each time (±2 steps). Without a trustworthy
-zero, everything downstream is built on sand.
+### S3T2 — X reflex stop
+X steps slowly in place; hand-trip any switch and the motor halts within ~1 step and disables
+— locally, no ThinkCentre. Proves the reflex mechanism alone (no homing, no back-off, no wall).
 
-### E3 — Travel measurement
-Prove you can measure how far each axis actually travels, in steps. Home one end = 0, drive
-to the far switch counting steps — that count is the axis length (the *hard stop*); center
-is half of it. Run three times to confirm the number is stable, then write it into the YAML.
-For Z, measure Z1 and Z2 separately and log the difference (out-of-square).
-s-fi
-### E4 — Boundary enforcement
-Prove the machine won't crash itself in normal operation. The brain (ThinkCentre) does the
-limit math and only ever sends in-bounds moves, staying inside the *soft stop* (hard stop
-minus buffer). The ESP32 keeps a crude sanity check as a fuse, and the switch is the
-last-resort backstop. Command a move that's too far; confirm the brain clamps it and the
-switch is never touched.
+### S3T3 — Z dual reflex stop
+Both Z motors step together; tripping any one of the four Z switches halts *both* within ~1
+step. Proves the anti-racking "any → all" rule — a trip on one channel kills both motors.
 
-### E5 — Calibration function
+### S3T4 — X home + measure
+X finds a repeatable zero (two-stage: fast approach, back off, slow re-approach), then drives
+to the far switch counting steps = travel (the *hard stop*); center is half. Back-off lives here.
+
+### S3T5 — Z home + measure (independent)
+Z1 and Z2 each home and measure travel independently, each stopping on its own switch. The
+Z1↔Z2 step difference is the out-of-square (squaring) figure.
+
+### S3T6 — Calibration function
 The payoff — one routine the operator runs at every new install. The human edits the YAML
-(shelf size, rows, columns); the machine then homes, measures its boundaries (E2 + E3),
-derives the soft stops and centers, and double-checks by moving to a computed point to
-confirm it arrives where predicted. When the YAML is filled in and verified, the machine is
-"calibrated" and allowed to run circuits. This is what E1–E4 were all preparation for.
+(shelf size, rows, columns); the machine homes + measures (S3T4/S3T5), derives the soft stops
+and centers, and double-checks by moving to a computed point to confirm it arrives where
+predicted. When the YAML is filled in and verified, the machine is "calibrated" and allowed to
+run circuits. This is what S3T2–S3T5 were all preparation for.
 
-**Through-line:** E1 stop → E2 zero → E3 measure → E4 stay safe → E5 tie it all into one
-setup routine.
+**Through-line:** read one → read all six → X reflex → Z dual reflex → X home+measure →
+Z home+measure → calibrate.
