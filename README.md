@@ -33,7 +33,7 @@ mpremote run disable-all.py
 Ctrl-C is only a best-effort stop (it can detach the terminal while the board keeps
 running), the safe habit is to stop the board first — `mpremote repl` then Ctrl-C, or
 `mpremote reset` — and then run `disable-all.py` to be certain the drivers are off.
-The serial port must be free first (one mpremote session owns it at a time).
+The serial port must be free first (one mpremote session owns it at a time). (Running disable-all.py itself after ctrl-c out of mpremote run ...also works fine)
 
 Not a substitute for a hardware kill switch — a serial command can't be a true safety
 stop. It's the software backstop for tidying up after an abort.

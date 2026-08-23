@@ -20,8 +20,11 @@
 #
 # Logic (NO): released = 1, pressed = 0. TRIGGERED = 0.
 
-
+##################################################
+####### Output from running this script:
+#
 # ❯ mpremote run test4--x-home-and-measure.py
+#
 # S3T4: X home (-> XZ2) + measure (-> XZ1), single-speed. Ctrl-C to abort.
 # [HOME]     driving toward XZ2...
 #   XZ2 tripped -> zero set.
