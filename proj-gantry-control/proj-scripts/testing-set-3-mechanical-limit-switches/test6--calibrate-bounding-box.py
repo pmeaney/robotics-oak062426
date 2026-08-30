@@ -24,30 +24,7 @@
 # Safety: drivers init DISABLED; try/finally disables all on any exit; runaway ceilings
 #         on every move. Ctrl-C is NOT a reliable stop -- hand on the 24V kill.
 
-# ❯ mpremote run test6--calibrate-bounding-box.py
-# S3T6 (measurement half): measure Z + X, emit bounding box.
-#        Heavy beam. Ctrl-C is NOT a safe stop -- hand on the 24V kill.
-# [Z]  home bottom (first-touch)...
-#      first bottom: Z2B.
-#      delta_bottom = 281 (lag Z1).
-#      first top: Z2T   travel_z = 11247.
-#      delta_top = 260 (lag Z1).
-#      Z beam low, held.
-# [X]  home toward XZ2...
-#      XZ2 reached (zero).
-#      XZ1 reached   travel_x = 10810.
-#   ==========================================================
-#   BOUNDING BOX (steps)
-#     hard   X: [0, 10810]   Z: [0, 11247]
-#     soft   X: [200, 10610]   Z: [200, 11047]   (inset 200 ~5 mm)
-#     center X: 5405   Z: 5623
-#     squaring  delta_bottom = 281   delta_top = 260
-#   ----------------------------------------------------------
-#   First-touch used for every limit -> the box is a true rectangle
-#   inscribed inside the reachable area (offset switches would skew it).
-#   ==========================================================
-# All drivers disabled.
-
+# thinkcentre-calibrate.py
 from machine import Pin
 import time
 

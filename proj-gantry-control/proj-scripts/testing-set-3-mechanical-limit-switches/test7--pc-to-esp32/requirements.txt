@@ -1,0 +1,5 @@
+# Test 7 host-side (ThinkCentre) Python dependencies.
+# Install on the ThinkCentre only:  pip install -r requirements.txt
+# The ESP32 (MicroPython) needs NONE of these.
+pyserial
+pyyaml

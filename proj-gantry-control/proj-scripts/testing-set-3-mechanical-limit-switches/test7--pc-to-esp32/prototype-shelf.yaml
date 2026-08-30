@@ -1,7 +1,7 @@
 # prototype-shelf.yaml
 # Local reference DB for ONE physical shelf + the gantry calibration measured against it.
-# Lives on the ThinkCentre (Debian). The ESP32 never reads this file — it gets pushed
-# plain step limits as JSON over serial at startup.
+# Lives on the ThinkCentre (Debian). The ESP32 never reads this file — the ThinkCentre (brain)
+# reads it and orders the ESP32 over a line-based serial protocol (see README-test7.md).
 #
 # Two sections:
 #   shelf:   physical description  (human-authored, hand-measured, for reference)
